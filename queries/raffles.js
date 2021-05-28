@@ -90,4 +90,14 @@ const createRaffle = async (req, res, next) => {
     }
 }
 
-module.exports = { getAllRaffles, getSingleRaffle, getParticipants, createRaffle };
+const pickWinner = async (req, res, next) => {
+    try {
+        let winner = await db.one(`SELECT users.id, users.firstname, users.lastname, users.email, users.phone, users.registered_at FROM users LEFT JOIN entries ON entries.user_id = users.id WHERE raffle_id = $/id/ ORDER BY RANDOM() LIMIT 1`, {
+            id: id
+        })
+    } catch (error) {
+        
+    }
+}
+
+module.exports = { getAllRaffles, getSingleRaffle, getParticipants, createRaffle, pickWinner };

@@ -20,7 +20,7 @@ CREATE TABLE raffles (
     name VARCHAR UNIQUE,
     secret_token VARCHAR UNIQUE,
     created_at TIMESTAMP DEFAULT NOW(),
-    raffled_at TIMESTAMP,
+    raffled_at VARCHAR,
     winner_id INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
 

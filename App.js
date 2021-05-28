@@ -1,8 +1,8 @@
 const express = require('express');
-require('dotenv').config();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
 const PORT = process.env.PORT;
 
 const rafflesRouter = require('./routes/raffles');

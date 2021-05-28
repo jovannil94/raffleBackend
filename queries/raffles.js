@@ -11,10 +11,29 @@ const getAllRaffles = async (req, res, next) => {
     } catch (error) {
         res.status(400).json({
             status: "Error",
-            message: "Couldn't get all raffles",
+            message: "Couldn't retrieve all raffles",
             payload: error
         })
     }
 }
 
-module.exports = { getAllRaffles };
+const getSingleRaffle = async (req, res, next) => {
+    try {
+        let raffle = await db.one(`SELECT * FROM raffles WHERE id = $/id/`, {
+            id: req.params.id
+        });
+        res.status(200).json({
+            status: "Success",
+            message: "Retrieved raffle",
+            payload: raffle
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: "Error",
+            message: "Couldn't retrieve the raffle",
+            payload: error
+        })
+    }
+}
+
+module.exports = { getAllRaffles, getSingleRaffle };

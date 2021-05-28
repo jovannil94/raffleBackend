@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    raffle_id INTEGER UNIQUE,
     firstname VARCHAR,
     lastname VARCHAR,
     email VARCHAR UNIQUE,
@@ -17,10 +16,16 @@ CREATE TABLE users (
 );
 
 CREATE TABLE raffles (
-    id INTEGER REFERENCES users(raffle_id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
     name VARCHAR,
     secret_token VARCHAR UNIQUE,
     created_at TIMESTAMP DEFAULT NOW(),
     raffled_at TIMESTAMP,
     winner_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE entries (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    raffle_id INTEGER REFERENCES raffles(id) ON DELETE CASCADE
 );

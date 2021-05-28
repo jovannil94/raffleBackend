@@ -36,4 +36,16 @@ const getSingleRaffle = async (req, res, next) => {
     }
 }
 
-module.exports = { getAllRaffles, getSingleRaffle };
+const getParticipants = async (req, res, next) => {
+    try {
+        
+    } catch (error) {
+        res.status(400).json({
+            status: "Error",
+            message: "Couldn't get participants",
+            payload: error
+        })
+    }
+}
+
+module.exports = { getAllRaffles, getSingleRaffle, getParticipants };

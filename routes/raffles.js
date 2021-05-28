@@ -1,6 +1,6 @@
 const raffles = require('express').Router();
 
-const { getAllRaffles, getSingleRaffle, getParticipants } = require('../queries/raffles');
+const { getAllRaffles, getSingleRaffle, getParticipants, createRaffle } = require('../queries/raffles');
 
 //, , getWinner, getRaffleStatus, createRaffle, signUpUser, pickWinner
 
@@ -14,7 +14,7 @@ raffles.get("/:id/participants", getParticipants);
 
 // raffles.get("/:id?active=<false|true>", getRaffleStatus);
 
-// raffles.post("/", createRaffle);
+raffles.post("/", createRaffle);
 
 // raffles.post("/:id/participants", signUpUser);
 

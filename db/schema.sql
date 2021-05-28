@@ -17,7 +17,7 @@ CREATE TABLE users (
 
 CREATE TABLE raffles (
     id SERIAL PRIMARY KEY,
-    name VARCHAR,
+    name VARCHAR UNIQUE,
     secret_token VARCHAR UNIQUE,
     created_at TIMESTAMP DEFAULT NOW(),
     raffled_at TIMESTAMP,

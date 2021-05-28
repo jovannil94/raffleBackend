@@ -14,6 +14,7 @@ const getAllRaffles = async (req, res, next) => {
             message: "Couldn't retrieve all raffles",
             payload: error
         })
+        next(error);
     }
 }
 
@@ -33,6 +34,7 @@ const getSingleRaffle = async (req, res, next) => {
             message: "Couldn't retrieve the raffle",
             payload: error
         })
+        next(error);
     }
 }
 
@@ -60,7 +62,32 @@ const getParticipants = async (req, res, next) => {
             message: "Couldn't get participants",
             payload: error
         })
+        next(error);
     }
 }
 
-module.exports = { getAllRaffles, getSingleRaffle, getParticipants };
+const createRaffle = async (req, res, next) => {
+    try {
+        let raffle = await db.one(
+            `INSERT INTO raffles (name, secret_token) 
+            VALUES ($/name/, $/secret_token/) 
+            RETURNING raffles.name, raffles.secret_token`, {
+                name: req.body.name,
+                secret_token: req.body.secret_token
+            });
+        res.status(200).json({
+            status: "Success",
+            message: "Raffle was created",
+            payload: raffle
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: "Error",
+            message: "Couldn't create raffle",
+            payload: error
+        })
+        next()
+    }
+}
+
+module.exports = { getAllRaffles, getSingleRaffle, getParticipants, createRaffle };

@@ -3,8 +3,8 @@ CREATE DATABASE raffle_database;
 
 \c raffle_database;
 
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS raffles;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -18,7 +18,7 @@ CREATE TABLE users (
 
 CREATE TABLE raffles (
     id INTEGER REFERENCES users(raffle_id) ON DELETE CASCADE,
-    name VARCHAR UNIQUE,
+    name VARCHAR,
     secret_token VARCHAR UNIQUE,
     created_at TIMESTAMP DEFAULT NOW(),
     raffled_at TIMESTAMP,

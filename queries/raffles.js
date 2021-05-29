@@ -84,6 +84,7 @@ const getWinner = async (req, res, next) => {
             message: "Couldn't get winner",
             payload: error
         })
+        next(error);
     }
 }
 
@@ -105,6 +106,19 @@ const createRaffle = async (req, res, next) => {
         res.status(400).json({
             status: "Error",
             message: "Couldn't create raffle",
+            payload: error
+        })
+        next()
+    }
+}
+
+const signUpUser = async (req, res, next) => {
+    try {
+        let user = await db.one(`INSERT INTO users ()`)
+    } catch (error) {
+        res.status(400).json({
+            status: "Error",
+            message: "Couldn't sign up user",
             payload: error
         })
         next()
@@ -165,4 +179,4 @@ const pickWinner = async (req, res, next) => {
     }
 }
 
-module.exports = { getAllRaffles, getSingleRaffle, getParticipants, getWinner, createRaffle, pickWinner };
+module.exports = { getAllRaffles, getSingleRaffle, getParticipants, getWinner, createRaffle, signUpUser, pickWinner };

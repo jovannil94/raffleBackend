@@ -95,10 +95,12 @@ const pickWinner = async (req, res, next) => {
         let match = await db.one (`
         SELECT * FROM raffles 
         WHERE secret_token 
-        LIKE $/secret_token/`, {
-            secret_token: req.body.secret_token
+        LIKE $/secret_token/
+        AND id = $/id/`, {
+            secret_token: req.body.secret_token,
+            id: req.params.id
         });
-        if(match.length != 0) {
+        if(match) {
             let winnerID = await db.one(`
             SELECT users.id FROM users 
             LEFT JOIN entries ON entries.user_id = users.id 
@@ -106,23 +108,23 @@ const pickWinner = async (req, res, next) => {
             ORDER BY RANDOM() LIMIT 1`, {
                 id: req.params.id
             });
-            await db.none (`
-            UPDATE raffles 
-            SET winner_id = ${winnerID}, raffled_at = $/time_stamp/ 
-            WHERE id = $/id/`, {
-                id: req.params.id,
-                time_stamp: new Date.now().toISOString()
-            });
-            let winnerInfo = await db.any(`
-            SELECT users.id, users.firstname, users.lastname, users.email, users.phone, users.registered_at FROM users 
-            LEFT JOIN raffles ON users.id = raffles.id 
-            WHERE raffles.id = $/id/`, {
-                id: req.params.id
-            });
+            // await db.none (`
+            // UPDATE raffles 
+            // SET winner_id = ${winnerID}, raffled_at = $/time_stamp/ 
+            // WHERE id = $/id/`, {
+            //     id: req.params.id,
+            //     time_stamp: new Date.now().toISOString()
+            // });
+            // let winnerInfo = await db.any(`
+            // SELECT users.id, users.firstname, users.lastname, users.email, users.phone, users.registered_at FROM users 
+            // LEFT JOIN raffles ON users.id = raffles.id 
+            // WHERE raffles.id = $/id/`, {
+            //     id: req.params.id
+            // });
             res.status(400).json({
                 status: "Success",
                 message: "Winner picked!",
-                payload: winnerInfo
+                payload: winnerID
             });
         }
     } catch (error) {

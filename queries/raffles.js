@@ -66,6 +66,27 @@ const getParticipants = async (req, res, next) => {
     }
 }
 
+const getWinner = async (req, res, next) => {
+    try {
+        let winner = await db.one(`SELECT users.id, users.firstname, users.lastname, users.email, users.phone, users.registered_at FROM users 
+        LEFT JOIN raffles ON users.id = raffles.winner_id 
+        WHERE raffles.id = $/id/`, {
+            id: req.params.id
+        })
+        res.status(200).json({
+            status: "Success",
+            message: "Retrieved winner",
+            payload: winner
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: "Error",
+            message: "Couldn't get winner",
+            payload: error
+        })
+    }
+}
+
 const createRaffle = async (req, res, next) => {
     try {
         let raffle = await db.one(
@@ -140,7 +161,8 @@ const pickWinner = async (req, res, next) => {
             message: "Couldn't pick a winner",
             payload: error
         })
+        next()
     }
 }
 
-module.exports = { getAllRaffles, getSingleRaffle, getParticipants, createRaffle, pickWinner };
+module.exports = { getAllRaffles, getSingleRaffle, getParticipants, getWinner, createRaffle, pickWinner };

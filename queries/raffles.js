@@ -100,7 +100,7 @@ const pickWinner = async (req, res, next) => {
             secret_token: req.body.secret_token,
             id: req.params.id
         });
-        if(match) {
+        if(match.winner_id === null) {
             let winnerID = await db.one(`
             SELECT users.id FROM users 
             LEFT JOIN entries ON entries.user_id = users.id 
@@ -108,25 +108,31 @@ const pickWinner = async (req, res, next) => {
             ORDER BY RANDOM() LIMIT 1`, {
                 id: req.params.id
             });
+            await db.none (`
+            UPDATE raffles 
+            SET winner_id = $/winner_id/, raffled_at = $/time_stamp/ 
+            WHERE id = $/id/`, {
+                id: req.params.id,
+                time_stamp: new Date(),
+                winner_id: winnerID.id
+            });
             let winnerInfo = await db.any(`
             SELECT users.id, users.firstname, users.lastname, users.email, users.phone, users.registered_at FROM users 
             LEFT JOIN raffles ON users.id = raffles.winner_id 
             WHERE raffles.id = $/id/`, {
                 id: req.params.id
             });
-            // await db.none (`
-            // UPDATE raffles 
-            // SET winner_id = $/winner_id/, raffled_at = $/time_stamp/ 
-            // WHERE id = $/id/`, {
-            //     id: req.params.id,
-            //     time_stamp: 3,
-            //     winner_id: winnerID
-            // });
             res.status(400).json({
                 status: "Success",
                 message: "Winner picked!",
                 payload: winnerInfo
             });
+        } else {
+            res.status(400).json({
+                status: "Unsuccessful",
+                message: "There is already an exisiting winner",
+                payload: match.winner_id
+            }); 
         }
     } catch (error) {
         res.status(400).json({

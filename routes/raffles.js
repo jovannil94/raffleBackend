@@ -18,6 +18,6 @@ raffles.post("/", createRaffle);
 
 // raffles.post("/:id/participants", signUpUser);
 
-raffles.put("/:id/winner", pickWinner);
+raffles.patch("/:id/winner", pickWinner);
 
 module.exports = raffles;

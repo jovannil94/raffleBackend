@@ -3,6 +3,7 @@ CREATE DATABASE raffle_database;
 
 \c raffle_database;
 
+DROP TABLE IF EXISTS entries;
 DROP TABLE IF EXISTS raffles;
 DROP TABLE IF EXISTS users;
 

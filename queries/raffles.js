@@ -108,23 +108,24 @@ const pickWinner = async (req, res, next) => {
             ORDER BY RANDOM() LIMIT 1`, {
                 id: req.params.id
             });
+            let winnerInfo = await db.any(`
+            SELECT users.id, users.firstname, users.lastname, users.email, users.phone, users.registered_at FROM users 
+            LEFT JOIN raffles ON users.id = raffles.winner_id 
+            WHERE raffles.id = $/id/`, {
+                id: req.params.id
+            });
             // await db.none (`
             // UPDATE raffles 
-            // SET winner_id = ${winnerID}, raffled_at = $/time_stamp/ 
+            // SET winner_id = $/winner_id/, raffled_at = $/time_stamp/ 
             // WHERE id = $/id/`, {
             //     id: req.params.id,
-            //     time_stamp: new Date.now().toISOString()
-            // });
-            // let winnerInfo = await db.any(`
-            // SELECT users.id, users.firstname, users.lastname, users.email, users.phone, users.registered_at FROM users 
-            // LEFT JOIN raffles ON users.id = raffles.id 
-            // WHERE raffles.id = $/id/`, {
-            //     id: req.params.id
+            //     time_stamp: 3,
+            //     winner_id: winnerID
             // });
             res.status(400).json({
                 status: "Success",
                 message: "Winner picked!",
-                payload: winnerID
+                payload: winnerInfo
             });
         }
     } catch (error) {

@@ -114,7 +114,25 @@ const createRaffle = async (req, res, next) => {
 
 const signUpUser = async (req, res, next) => {
     try {
-        let user = await db.one(`INSERT INTO users ()`)
+        let user = await db.one(`
+        INSERT INTO users (firstname, lastname, email, phone) 
+        VALUES ($/firstname/, $/lastname/, $/email/, $/phone/) 
+        RETURNING *`, {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+            phone: req.body.phone
+        });
+        console.log(user.id)
+        await db.none(`INSERT INTO entries (user_id, raffle_id) VALUES ($/user_id/, $/raffle_id/)`, {
+            user_id: user.id,
+            raffle_id: req.params.id
+        })
+        res.status(200).json({
+            status: "Success",
+            message: "User was signed up to raffle!",
+            payload: user
+        })
     } catch (error) {
         res.status(400).json({
             status: "Error",

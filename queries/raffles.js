@@ -123,7 +123,6 @@ const signUpUser = async (req, res, next) => {
             email: req.body.email,
             phone: req.body.phone
         });
-        console.log(user.id)
         await db.none(`INSERT INTO entries (user_id, raffle_id) VALUES ($/user_id/, $/raffle_id/)`, {
             user_id: user.id,
             raffle_id: req.params.id
@@ -183,7 +182,7 @@ const pickWinner = async (req, res, next) => {
         } else {
             res.status(400).json({
                 status: "Unsuccessful",
-                message: "There is already an exisiting winner",
+                message: "There is already an existing winner",
                 payload: match.winner_id
             }); 
         }
